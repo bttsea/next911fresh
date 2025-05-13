@@ -1,0 +1,30 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "private_why": "private: true 是建议加上的，防止误发布到 npm",
+  "scripts": {
+    "dev00": "cross-env NODE_OPTIONS=\"--inspect --openssl-legacy-provider\"  next dev" ,
+    "dev": "cross-env NODE_OPTIONS=\" --openssl-legacy-provider\" nodemon --inspect=9230 server.js",
+    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider next build",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production  node server.js",
+
+    "dev80": "cross-env NODE_OPTIONS=\" --openssl-legacy-provider\"    NODE_ENV=development  nodemon --inspect=9230 server.js",
+    "prod80": "cross-env  NODE_OPTIONS=\" --openssl-legacy-provider\"   next build",
+    "start80": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production  node server.js"
+  },
+  "dependencies": { 
+    "next": "file:../next",
+    "babel-loader": "8.0.6",
+
+    "express": "^4.17.1",
+    "nedb": "^1.8.0",
+  
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.4"
+  }
+}
