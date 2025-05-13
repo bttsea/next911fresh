@@ -1,1 +1,0 @@
-"use strict";exports.__esModule=true;exports.name=exports.isCI=void 0;var _ciInfo=_interopRequireDefault(require("ci-info"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e};}const{isCI:_isCI,name:_name}=_ciInfo.default;const isZeitNow=!!process.env.NOW_BUILDER;const isCI=exports.isCI=isZeitNow||_isCI;const name=exports.name=isZeitNow?'ZEIT Now':_name;
