@@ -1,0 +1,1 @@
+{"version":3,"names":["NoopLoader","source","_default","exports","default"],"sources":["noop-loader.ts"],"sourcesContent":["import { loader } from 'webpack'\n\nconst NoopLoader: loader.Loader = source => source\nexport default NoopLoader\n"],"mappings":"4DAEA,KAAM,CAAAA,UAAyB,CAAGC,MAAM,EAAIA,MAAM,KAAAC,QAAA,CAAAC,OAAA,CAAAC,OAAA,CACnCJ,UAAU","ignoreList":[]}

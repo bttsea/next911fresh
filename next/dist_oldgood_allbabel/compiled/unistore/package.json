@@ -1,0 +1,7 @@
+{
+  "name": "unistore",
+  "main": "index.js",
+  "author": "Jason Miller <jason@developit.ca>",
+  "license": "MIT",
+  "types": "index.d.ts"
+}
