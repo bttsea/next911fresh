@@ -113,7 +113,7 @@ class Router {
       });
     }
   }
-  
+
   /**   * 静态方法，重写 URL 用于 Next.js 导出
    * @param {string} url - 原始 URL   * @returns {string} - 重写后的 URL   */
   static _rewriteUrlForNextExport(url) {
@@ -672,8 +672,7 @@ module.exports = Router;
 将代码保存为 router.js（或其他文件名）。
 
 引入 Router：
-使用 CommonJS：
-javascript
+使用 CommonJS： 
 
 const Router = require('./router');
 const router = new Router(
@@ -691,8 +690,7 @@ const router = new Router(
 );
 router.push('/about');
 
-使用 ES Module：
-javascript
+使用 ES Module： 
 
 import Router from './router';
 // 同上
