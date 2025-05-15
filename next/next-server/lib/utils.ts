@@ -2,7 +2,7 @@ import { format, UrlObject, URLFormatOptions } from 'url'
 import { ServerResponse, IncomingMessage } from 'http'
 import { ComponentType } from 'react'
 import { ParsedUrlQuery } from 'querystring'
-import { ManifestItem } from '../server/render'
+ 
 import { NextRouter } from './router/router'
 
 /**
@@ -144,7 +144,7 @@ export type DocumentProps = DocumentInitialProps & {
   hasCssMode: boolean
   devFiles: string[]
   files: string[]
-  dynamicImports: ManifestItem[]
+  dynamicImports: any[]
   assetPrefix?: string
   canonicalBase: string
 }
@@ -307,4 +307,4 @@ export const SUPPORTS_PERFORMANCE = typeof performance !== 'undefined'
 export const SUPPORTS_PERFORMANCE_USER_TIMING =
   SUPPORTS_PERFORMANCE &&
   typeof performance.mark === 'function' &&
-  typeof performance.measure === 'function'
+  typeof performance.measure === 'function' 

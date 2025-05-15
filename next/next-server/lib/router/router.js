@@ -3,7 +3,7 @@
 
 // 引入必要的依赖模块
 const { parse, format } = require('url');
-const mitt = require('../mitt').default; // 假设 mitt 模块在指定路径
+const mitt = require('../mitt'); // 假设 mitt 模块在指定路径
 const {
   formatWithValidation,
   getURL,
