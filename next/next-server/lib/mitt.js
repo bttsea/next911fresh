@@ -73,4 +73,38 @@ const emitter = mitt();
 emitter.on('test', (data) => console.log(data));
 emitter.emit('test', 'Hello'); // 输出: Hello
 
+
+
+
+
+
+
+
+
+示例：
+const mitt = require('../lib/mitt');
+const emitter = mitt();
+emitter.on('event', (...args) => console.log('Event:', args));
+emitter.emit('event', 1, 2, 3); // 输出: Event: [1, 2, 3]
+emitter.off('event', handler);
+emitter.emit('event', 4); // 无输出
+
+
+
+
+
+
+
+
+
+
+
+
+
+[mitt.js]
+└── mitt - 创建事件发射器
+    ├── on - 注册事件监听
+    ├── off - 移除事件监听
+    └── emit - 触发事件
+
 /***** */

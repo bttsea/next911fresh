@@ -218,6 +218,19 @@ export default class Server {
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+  
   protected generateRoutes(): Route[] {
     const publicRoutes = fs.existsSync(this.publicDir)
       ? this.generatePublicRoutes()
@@ -427,6 +440,11 @@ export default class Server {
     }
   }
 
+
+
+
+
+
   protected async run(
     req: IncomingMessage,
     res: ServerResponse,
@@ -490,6 +508,13 @@ export default class Server {
 
     return this.sendHTML(req, res, html)
   }
+
+
+
+
+
+
+
 
   private async findPageComponents(
     pathname: string,
@@ -802,6 +827,10 @@ export default class Server {
     return this.renderError(null, req, res, pathname, query)
   }
 
+
+
+
+  
   public async serveStatic(
     req: IncomingMessage,
     res: ServerResponse,

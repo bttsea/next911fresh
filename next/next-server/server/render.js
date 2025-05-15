@@ -643,3 +643,37 @@ module.exports = {
   renderToHTML,
   serializeError,
 };
+
+
+
+
+/*
+[old_render.js]
+├── renderToHTML - 渲染页面到 HTML
+│   ├── loadGetInitialProps - 加载初始属性
+│   ├── renderDocument - 渲染 Document 组件
+│   │   └── renderToStaticMarkup (外部) - 渲染为静态标记
+│   ├── AppContainer - 包装组件提供上下文
+│   │   ├── RouterContext (外部) - 路由上下文
+│   │   ├── DataManagerContext (外部) - 数据管理上下文
+│   │   ├── AmpStateContext (外部) - AMP 状态上下文
+│   │   └── LoadableContext (外部) - 动态加载上下文
+│   └── ServerRouter.events [mitt.js] - 路由事件
+├── renderDocument - 渲染 Document 组件
+│   ├── renderToStaticMarkup (外部) - 渲染为静态标记
+│   └── serializeError - 序列化错误
+├── AppContainer - 包装组件提供上下文
+└── serializeError - 序列化错误
+    └── errorToJSON (外部) - 错误转 JSON
+
+
+
+
+
+
+
+
+ 
+
+
+    /**** */
