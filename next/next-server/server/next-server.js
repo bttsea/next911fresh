@@ -5,8 +5,7 @@ const { IncomingMessage, ServerResponse } = require('http');
 const { join, resolve, sep } = require('path');
 const { parse: parseQs } = require('querystring');
 const { parse: parseUrl } = require('url');
-// 引入项目内部工具模块
-const { withCoalescedInvoke } = require('../../lib/coalesced-function');
+ 
 const {
   BUILD_ID_FILE,
   CLIENT_PUBLIC_FILES_PATH,
@@ -38,11 +37,7 @@ const { sendHTML } = require('./send-html');
 const { serveStatic } = require('./serve-static');
 const { isBlockedPage, isInternalUrl } = require('./utils');
 const { findPagesDir } = require('../../lib/find-pages-dir');
-const { initializeSprCache, getSprCache, setSprCache } = require('./spr-cache');
-
-
-
-
+ 
 
 
 
@@ -152,16 +147,7 @@ class Server {
     this.router = new Router(routes);   
     this.setAssetPrefix(assetPrefix); // 设置资源前缀
 
-     initializeSprCache({   // 初始化 SPR 缓存
-      dev,
-      distDir: this.distDir,
-      pagesDir: join(
-        this.distDir,
-        `${SERVER_DIRECTORY}/static/${this.buildId}`,
-        'pages'
-      ),
-      flushToDisk: this.nextConfig.experimental.sprFlushToDisk,
-    });
+ 
   }
 
   /**   * 获取当前运行阶段
@@ -571,93 +557,22 @@ class Server {
     const isLikeServerless =
       typeof result.Component === 'object' && typeof result.Component.renderReqToHTML === 'function';
     const isSpr = !!result.unstable_getStaticProps;
-
-    // 非 SPR 请求按正常方式渲染
-    if (!isSpr) {
+ 
       if (isLikeServerless) {
         return result.Component.renderReqToHTML(req, res);
       }
       return renderToHTML(req, res, pathname, query, { ...result, ...opts });
-    }
-
-    // 处理 SPR 数据请求
-    const isSprData = isSpr && query._nextSprData;
-    if (isSprData) {
-      delete query._nextSprData;
-    }
-    const sprCacheKey = parseUrl(req.url || '').pathname;
-
-    // 检查缓存
-    const cachedData = await getSprCache(sprCacheKey);
-    if (cachedData) {
-      const data = isSprData ? JSON.stringify(cachedData.pageData) : cachedData.html;
-      this.__sendPayload(
-        res,
-        data,
-        isSprData ? 'application/json' : 'text/html; charset=utf-8',
-        cachedData.curRevalidate
-      );
-      if (!cachedData.isStale) {
-        return null;
-      }
-    }
+   
 
 
 
 
+    // 处理 SPR 数据请求..............deleted.......deleted.......deleted
 
 
 
 
-
-
-
-
-    // If we're here, that means data is missing or it's stale.
-    // Serverless requests need its URL transformed back into the original
-    // request path (to emulate lambda behavior in production)
-    // 无缓存或缓存失效，重新渲染
-    if (isLikeServerless && isSprData) {
-      const curUrl = parseUrl(req.url || '', true);
-      req.url = `/_next/data${curUrl.pathname}.json`;
-    }
-
-    const doRender = withCoalescedInvoke(async function () {
-      let sprData;
-      let html;
-      let sprRevalidate;
-
-      let renderResult;
-      if (isLikeServerless) {
-        renderResult = await result.Component.renderReqToHTML(req, res, true);
-        html = renderResult.html;
-        sprData = renderResult.renderOpts.sprData;
-        sprRevalidate = renderResult.renderOpts.revalidate;
-      } else {
-        const renderOpts = { ...result, ...opts };
-        renderResult = await renderToHTML(req, res, pathname, query, renderOpts);
-        html = renderResult;
-        sprData = renderOpts.sprData;
-        sprRevalidate = renderOpts.revalidate;
-      }
-
-      return { html, sprData, sprRevalidate };
-    });
-
-    return doRender(sprCacheKey, []).then(async ({ isOrigin, value: { html, sprData, sprRevalidate } }) => {
-      if (!isResSent(res)) {
-        this.__sendPayload(
-          res,
-          isSprData ? JSON.stringify(sprData) : html,
-          isSprData ? 'application/json' : 'text/html; charset=utf-8',
-          sprRevalidate
-        );
-      }
-      if (isOrigin) {
-        await setSprCache(sprCacheKey, { html: html, pageData: sprData }, sprRevalidate);
-      }
-      return null;
-    });
+ 
   }
 
 
@@ -987,7 +902,6 @@ old_next-server.js
 │   │   │   ├── getRouteRegex (外部) - 获取路由正则
 │   │   │   └── getSortedRoutes (外部) - 排序路由
 │   │   └── route (外部) - 创建路由匹配器
-│   ├── initializeSprCache - 初始化 SPR 缓存
 │   ├── loadConfig (外部) - 加载 Next.js 配置
 │   └── envConfig.setConfig (外部) - 设置运行时配置
 
@@ -1018,11 +932,9 @@ old_next-server.js
 │   │   └── loadComponents (外部) - 加载组件
 │   ├── renderToHTMLWithComponents - 使用组件渲染
 │   │   ├── renderToHTML [old_render.js] - 渲染页面到 HTML
-│   │   ├── Component.renderReqToHTML - 无服务器渲染
-│   │   ├── getSprCache - 获取 SPR 缓存
-│   │   ├── setSprCache - 设置 SPR 缓存
+│   │   ├── Component.renderReqToHTML - 无服务器渲染 
 │   │   ├── __sendPayload - 发送响应数据
-│   │   └── withCoalescedInvoke (外部) - 合并调用
+│   │    
 │   └── parseUrl (外部) - 解析 URL
 ├── renderError - 渲染错误页面
 │   ├── renderErrorToHTML - 渲染错误到 HTML
