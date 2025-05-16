@@ -26,48 +26,42 @@ const envConfig = require('../lib/runtime-config');
 const { isResSent } = require('../lib/utils');
 const { apiResolver } = require('./api-utils');
 const loadConfig = require('./config').default;
- 
-const { recursiveReadDirSync } = require('./lib/recursive-readdir-sync');
+  
 const { loadComponents } = require('./load-components');
 const { renderToHTML } = require('./render');
 const { getPagePath } = require('./require');
-const Router = require('./router').default;
-const { route } = require('./router');
+ 
+const { Router, route } = require('./router');
 const { sendHTML } = require('./send-html');
 const { serveStatic } = require('./serve-static');
 const { isBlockedPage, isInternalUrl } = require('./utils');
 const { findPagesDir } = require('../../lib/find-pages-dir');
  
+/** * 递归读取目录中的所有文件（同步）
+ * @param {string} dir - 要读取的目录路径
+ * @param {string[]} [arr=[]] - 存储文件路径的数组，用于递归（无需手动传入）
+ * @param {string} [rootDir=dir] - 根目录路径，用于计算相对路径，默认为 dir
+ * @returns {string[]} 包含所有文件相对路径的数组 */
+function recursiveReadDirSync(dir, arr = [], rootDir = dir) {
+  const result = fs.readdirSync(dir);  // 同步读取目录内容
 
+  result.forEach((part) => {  // 遍历目录中的每个条目
+    const absolutePath = join(dir, part);    // 构造绝对路径
+    const pathStat = fs.statSync(absolutePath);    // 获取文件或目录的状态
+ 
+    if (pathStat.isDirectory()) {   // 如果是目录，递归调用
+      recursiveReadDirSync(absolutePath, arr, rootDir);
+      return;
+    }
 
+    arr.push(absolutePath.replace(rootDir, ''));    // 如果是文件，将相对路径添加到数组
+  });
 
+  return arr;  // 返回包含所有相对路径的数组
+}
 
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Next.js 服务器类，处理 HTTP 请求、路由、静态文件和页面渲染
- */
-class Server {
-
-
-
-
-
-
-
-
-
-
-
+/** * Next.js 服务器类，处理 HTTP 请求、路由、静态文件和页面渲染 */
+class Server { 
   /**
    * 构造函数，初始化服务器配置
    * @param {Object} options - 配置选项
@@ -100,6 +94,18 @@ class Server {
 
 
   
+
+
+
+
+
+
+
+
+
+
+
+
     
     // 获取服务器和公共运行时配置
     // Only serverRuntimeConfig needs the default
@@ -584,6 +590,92 @@ class Server {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 /**
  * 渲染页面到 HTML（公共接口）
  * @param {Object} req - HTTP 请求对象

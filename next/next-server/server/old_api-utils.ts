@@ -10,6 +10,10 @@ import { interopDefault } from './load-components'
 export type NextApiRequestCookies = { [key: string]: string }
 export type NextApiRequestQuery = { [key: string]: string | string[] }
 
+
+
+
+
 export async function apiResolver(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -94,6 +98,12 @@ export async function parseBody(req: NextApiRequest, limit: string | number) {
   }
 }
 
+
+
+
+
+
+
 /**
  * Parse `JSON` and handles invalid `JSON` strings
  * @param str `JSON` string
@@ -153,6 +163,8 @@ export function sendStatusCode(res: NextApiResponse, statusCode: number) {
   return res
 }
 
+
+
 /**
  * Send `any` body to response
  * @param res response object
@@ -208,6 +220,12 @@ export function sendJson(res: NextApiResponse, jsonBody: any): void {
   res.send(jsonBody)
 }
 
+
+
+
+
+
+
 /**
  * Custom error class
  */
@@ -219,6 +237,13 @@ export class ApiError extends Error {
     this.statusCode = statusCode
   }
 }
+
+
+
+
+
+
+
 
 /**
  * Sends error in `response`

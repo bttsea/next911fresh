@@ -25,7 +25,7 @@ const { RouterContext } = require('../lib/router-context');
 const { DataManager } = require('../lib/data-manager');
 const { getPageFiles } = require('./get-page-files');
 const { AmpStateContext } = require('../lib/amp-context');
-const optimizeAmp = require('./optimize-amp').default;
+ 
 const { isInAmpMode } = require('../lib/amp');
 const { isDynamicRoute } = require('../lib/router/utils/is-dynamic');
 const { SPR_GET_INITIAL_PROPS_CONFLICT } = require('../../lib/constants');

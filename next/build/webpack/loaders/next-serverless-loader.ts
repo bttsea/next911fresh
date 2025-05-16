@@ -43,6 +43,7 @@ const nextServerlessLoader: loader.Loader = function() {
     '/'
   )
 
+  /*
   if (page.match(API_ROUTE)) {
     return `
     ${
@@ -66,7 +67,9 @@ const nextServerlessLoader: loader.Loader = function() {
         apiResolver(req, res, params, resolver)
       }
     `
-  } else {
+  } else 
+  /**** */
+  {
     return `
     import {parse} from 'url'
     import {renderToHTML} from 'next/dist/next-server/server/render';
