@@ -22,7 +22,7 @@ import {
   SERVER_DIRECTORY,
   SERVERLESS_DIRECTORY,
 } from '../next-server/lib/constants'
-import loadConfig, {
+import {loadConfig, 
   isTargetLikeServerless,
 } from '../next-server/server/config'
 import { recordVersion } from '../telemetry/events'

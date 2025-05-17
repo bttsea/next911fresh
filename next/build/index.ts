@@ -21,7 +21,7 @@ import {
   SERVERLESS_DIRECTORY,
 } from '../next-server/lib/constants'
 import { getRouteRegex, isDynamicRoute } from '../next-server/lib/router/utils'
-import loadConfig, {
+import {loadConfig, 
   isTargetLikeServerless,
 } from '../next-server/server/config'
 import {

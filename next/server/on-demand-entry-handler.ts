@@ -15,12 +15,26 @@ import {
   ROUTE_NAME_REGEX,
 } from '../next-server/lib/constants'
 import { normalizePagePath } from '../next-server/server/normalize-page-path'
-import { pageNotFoundError } from '../next-server/server/require'
+////////import { pageNotFoundError } from '../next-server/server/require'
 import { findPageFile } from './lib/find-page-file'
 
 const ADDED = Symbol('added')
 const BUILDING = Symbol('building')
 const BUILT = Symbol('built')
+
+
+/**
+ * 创建页面未找到的错误
+ * @param {string} page - 页面路径（例如 '/about'）
+ * @returns {Error} 包含错误信息的 Error 对象，带有 ENOENT 错误码
+ */
+function pageNotFoundError(page) {
+  const err = new Error(`Cannot find module for page: ${page}`);
+  err.code = 'ENOENT';
+  return err;
+}
+
+
 
 // Based on https://github.com/webpack/webpack/blob/master/lib/DynamicEntryPlugin.js#L29-L37
 function addEntry(

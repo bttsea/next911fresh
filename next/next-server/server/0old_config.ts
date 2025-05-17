@@ -163,6 +163,7 @@ export default function loadConfig(
 }
 
 export function isTargetLikeServerless(target: string) {
+  return false; ///===
   const isServerless = target === 'serverless'
   const isServerlessTrace = target === 'experimental-serverless-trace'
   return isServerless || isServerlessTrace

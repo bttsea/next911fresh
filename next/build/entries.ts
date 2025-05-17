@@ -86,7 +86,7 @@ export function createEntrypoints(
 
     const bundlePath = join('static', buildId, 'pages', bundleFile)
 
-    const isLikeServerless = isTargetLikeServerless(target)
+    const isLikeServerless = false; ///=== isTargetLikeServerless(target)
 
     if (isApiRoute && isLikeServerless) {
       const serverlessLoaderOptions: ServerlessLoaderQuery = {
@@ -97,9 +97,7 @@ export function createEntrypoints(
       server[join('pages', bundleFile)] = `next-serverless-loader?${stringify(
         serverlessLoaderOptions
       )}!`
-    } else if (isApiRoute || target === 'server') {
-      server[bundlePath] = [absolutePagePath]
-    } else if (isLikeServerless && page !== '/_app' && page !== '/_document') {
+    }  else if (isLikeServerless && page !== '/_app' && page !== '/_document') {
       const serverlessLoaderOptions: ServerlessLoaderQuery = {
         page,
         absolutePagePath,
@@ -109,6 +107,16 @@ export function createEntrypoints(
         serverlessLoaderOptions
       )}!`
     }
+    else 
+
+      if (isApiRoute || target === 'server') {
+        server[bundlePath] = [absolutePagePath]
+      }
+
+
+
+
+
 
     if (page === '/_document') {
       return

@@ -73,7 +73,7 @@ const nextServerlessLoader: loader.Loader = function() {
     return `
     import {parse} from 'url'
     import {renderToHTML} from 'next/dist/next-server/server/render';
-    import {sendHTML} from 'next/dist/next-server/server/send-html';
+    ///=== import {sendHTML} from 'next/dist/next-server/server/send-html';
     ${
       isDynamicRoute(page)
         ? `import {getRouteMatcher, getRouteRegex} from 'next/dist/next-server/lib/router/utils';`
@@ -158,7 +158,7 @@ const nextServerlessLoader: loader.Loader = function() {
     export async function render (req, res) {
       try {
         const html = await renderReqToHTML(req, res)
-        sendHTML(req, res, html, {generateEtags: ${generateEtags}})
+       ///=== sendHTML(req, res, html, {generateEtags: ${generateEtags}})
       } catch(err) {
         console.error(err)
         res.statusCode = 500

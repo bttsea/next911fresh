@@ -15,6 +15,7 @@ const {
   PHASE_PRODUCTION_SERVER,
   SERVER_DIRECTORY,
   SERVERLESS_DIRECTORY,
+  BLOCKED_PAGES
 } = require('../lib/constants');
 const {
   getRouteMatcher,
@@ -25,17 +26,33 @@ const {
 const envConfig = require('../lib/runtime-config');
 const { isResSent } = require('../lib/utils');
 const { apiResolver } = require('./api-utils');
-const loadConfig = require('./config').default;
+const {loadConfig} = require('./config');
   
 const { loadComponents } = require('./load-components');
 const { renderToHTML } = require('./render');
-const { getPagePath } = require('./require');
+const { getPagePath } = require('./requirepage');
  
 const { Router, route } = require('./router');
 const { sendHTML } = require('./send-html');
-const { serveStatic } = require('./serve-static');
-const { isBlockedPage, isInternalUrl } = require('./utils');
-const { findPagesDir } = require('../../lib/find-pages-dir');
+///=== const { serveStatic } = require('./serve-static');
+///=== const { isBlockedPage, isInternalUrl } = require('./utils');
+///=== const { findPagesDir } = require('../../lib/find-pages-dir');
+
+const internalPrefixes = [/^\/_next\//, /^\/static\//]
+
+function isInternalUrl(url) {
+  for (const prefix of internalPrefixes) {
+    if (prefix.test(url)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function isBlockedPage(pathname) {
+  return BLOCKED_PAGES.indexOf(pathname) !== -1
+} 
  
 /** * 递归读取目录中的所有文件（同步）
  * @param {string} dir - 要读取的目录路径
@@ -59,6 +76,46 @@ function recursiveReadDirSync(dir, arr = [], rootDir = dir) {
 
   return arr;  // 返回包含所有相对路径的数组
 }
+
+
+// 引入 Node.js 内置模块和第三方模块
+const send = require('send');
+
+/**
+ * 提供静态文件服务，将文件内容流式传输到响应
+ * @param {Object} req - HTTP 请求对象
+ * @param {Object} res - HTTP 响应对象
+ * @param {string} path - 要服务的静态文件路径
+ * @returns {Promise} 解析为 undefined 的 Promise，失败时拒绝并附带错误
+ */
+function sendStatic(req, res, path) {
+  return new Promise((resolve, reject) => {
+    // 使用 send 模块处理静态文件
+    const stream = send(req, path);
+
+    // 处理目录访问（不允许）
+    stream.on('directory', () => {
+      const err = new Error('No directory access');
+      err.code = 'ENOENT';
+      reject(err);
+    });
+
+    // 处理错误
+    stream.on('error', reject);
+
+    // 将文件流传输到响应
+    stream.pipe(res);
+
+    // 传输完成时解析 Promise
+    stream.on('finish', resolve);
+  });
+}
+
+ 
+
+
+
+
 
 /** * Next.js 服务器类，处理 HTTP 请求、路由、静态文件和页面渲染 */
 class Server { 
@@ -843,7 +900,9 @@ async renderToHTML(req, res, pathname, query = {}, { amphtml, dataOnly, hasAmp }
     }
 
     try {
-      await serveStatic(req, res, path);
+
+      await sendStatic(req, res, path);   ///=== !!!!!!!!!!!!!!!!!!!!!!!
+
     } catch (err) {
       if (err.code === 'ENOENT' || err.statusCode === 404) {
         this.render404(req, res, parsedUrl);

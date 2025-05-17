@@ -1,7 +1,7 @@
 /* eslint-disable */
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { cleanAmpPath } from '../next-server/server/utils'
+///=== import { cleanAmpPath } from '../next-server/server/utils'
 import {
   DocumentContext,
   DocumentInitialProps,
@@ -364,7 +364,7 @@ export class Head extends Component<
           name="next-head-count"
           content={React.Children.count(head || []).toString()}
         />
-        {inAmpMode && (
+        {/* {inAmpMode && (
           <>
             <meta
               name="viewport"
@@ -376,13 +376,13 @@ export class Head extends Component<
                 href={canonicalBase + cleanAmpPath(dangerousAsPath)}
               />
             )}
-            {/* https://www.ampproject.org/docs/fundamentals/optimize_amp#optimize-the-amp-runtime-loading */}
+           
             <link
               rel="preload"
               as="script"
               href="https://cdn.ampproject.org/v0.js"
             />
-            {/* Add custom styles before AMP styles to prevent accidental overrides */}
+         
             {styles && (
               <style
                 amp-custom=""
@@ -411,7 +411,7 @@ export class Head extends Component<
             </noscript>
             <script async src="https://cdn.ampproject.org/v0.js" />
           </>
-        )}
+        )} */}
         {!inAmpMode && (
           <>
             {!hasAmphtmlRel && hybridAmp && (

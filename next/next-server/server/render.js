@@ -22,8 +22,8 @@ const Loadable = require('../lib/loadable').default;
 const { DataManagerContext } = require('../lib/data-manager-context');
 const { LoadableContext } = require('../lib/loadable-context');
 const { RouterContext } = require('../lib/router-context');
-const { DataManager } = require('../lib/data-manager');
-const { getPageFiles } = require('./get-page-files');
+const { DataManager } = require('../lib/data-manager'); 
+const { normalizePagePath } = require('./normalize-page-path');///const { getPageFiles } = require('./get-page-files');
 const { AmpStateContext } = require('../lib/amp-context');
  
 const { isInAmpMode } = require('../lib/amp');
@@ -637,6 +637,55 @@ function serializeError(dev, err) {
     statusCode: 500,
   };
 }
+
+
+
+
+/**
+ * 从构建清单中获取指定页面的文件列表
+ * @param {Object} buildManifest - 构建清单对象，包含 devFiles 和 pages 属性
+ * @param {string} page - 页面路径（例如 '/about' 或 '/posts/index'）
+ * @returns {string[]} 页面对应的文件路径数组，若未找到返回空数组
+ * 示例: 
+const manifest = {
+  pages: {
+    '/about': ['/static/about.js'],
+    '/': ['/static/index.js'],
+  },
+};
+const files = getPageFiles(manifest, '/about');
+// 返回: ['/static/about.js']
+ */
+function getPageFiles(buildManifest, page) {
+  // 规范化页面路径（移除多余斜杠等）
+  const normalizedPage = normalizePagePath(page);
+  // 获取页面对应的文件列表
+  let files = buildManifest.pages[normalizedPage];
+
+  // 如果未找到，尝试移除 '/index' 后缀或使用根路径 '/'
+  if (!files) {
+    files = buildManifest.pages[normalizedPage.replace(/\/index$/, '') || '/'];
+  }
+
+  // 如果仍未找到，打印警告并返回空数组
+  if (!files) {
+    console.warn(
+      `Could not find files for ${normalizedPage} in .next/build-manifest.json`
+    );
+    return [];
+  }
+
+  // 返回文件列表
+  return files;
+}
+
+
+
+
+
+
+
+
 
 // 导出函数，支持 CommonJS 和 ES Module
 module.exports = {

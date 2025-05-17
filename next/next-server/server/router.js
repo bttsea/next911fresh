@@ -135,9 +135,6 @@ console.log(match('/post/123')); // { id: '123' }
 
 
 
-
-
-
 ES Module: 
 
 import { Router, route } from '../server/router';
