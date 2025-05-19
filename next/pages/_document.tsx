@@ -1,7 +1,7 @@
 /* eslint-disable */
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-///=== import { cleanAmpPath } from '../next-server/server/utils'
+ 
 import {
   DocumentContext,
   DocumentInitialProps,
@@ -9,10 +9,7 @@ import {
 } from '../next-server/lib/utils'
 import { htmlEscapeJsonString } from '../server/htmlescape'
 import flush from 'styled-jsx/server'
-import {
-  CLIENT_STATIC_FILES_RUNTIME_AMP,
-  CLIENT_STATIC_FILES_RUNTIME_WEBPACK,
-} from '../next-server/lib/constants'
+ 
 
 export { DocumentContext, DocumentInitialProps, DocumentProps }
 
@@ -112,14 +109,10 @@ export class Html extends Component<
   context!: DocumentComponentContext
 
   render() {
-    const { inAmpMode } = this.context._documentProps
+ 
     return (
       <html
-        {...this.props}
-        amp={inAmpMode ? '' : undefined}
-        data-ampdevmode={
-          inAmpMode && process.env.NODE_ENV !== 'production' ? '' : undefined
-        }
+        {...this.props} 
       />
     )
   }
@@ -263,80 +256,13 @@ export class Head extends Component<
         )
     }
 
-    let hasAmphtmlRel = false
-    let hasCanonicalRel = false
-
-    // show warning and remove conflicting amp head tags
-    head = !inAmpMode
-      ? head
-      : React.Children.map(head || [], child => {
-          if (!child) return child
-          const { type, props } = child
-          let badProp: string = ''
-
-          if (type === 'meta' && props.name === 'viewport') {
-            badProp = 'name="viewport"'
-          } else if (type === 'link' && props.rel === 'canonical') {
-            hasCanonicalRel = true
-          } else if (type === 'link' && props.rel === 'amphtml') {
-            hasAmphtmlRel = true
-          } else if (type === 'script') {
-            // only block if
-            // 1. it has a src and isn't pointing to ampproject's CDN
-            // 2. it is using dangerouslySetInnerHTML without a type or
-            // a type of text/javascript
-            if (
-              (props.src && props.src.indexOf('ampproject') < -1) ||
-              (props.dangerouslySetInnerHTML &&
-                (!props.type || props.type === 'text/javascript'))
-            ) {
-              badProp = '<script'
-              Object.keys(props).forEach(prop => {
-                badProp += ` ${prop}="${props[prop]}"`
-              })
-              badProp += '/>'
-            }
-          }
-
-          if (badProp) {
-            console.warn(
-              `Found conflicting amp tag "${
-                child.type
-              }" with conflicting prop ${badProp} in ${
-                __NEXT_DATA__.page
-              }. https://err.sh/next.js/conflicting-amp-tag`
-            )
-            return null
-          }
-          return child
-        })
+ 
 
     // try to parse styles from fragment for backwards compat
     const curStyles: React.ReactElement[] = Array.isArray(styles)
       ? (styles as React.ReactElement[])
       : []
-    if (
-      inAmpMode &&
-      styles &&
-      // @ts-ignore Property 'props' does not exist on type ReactElement
-      styles.props &&
-      // @ts-ignore Property 'props' does not exist on type ReactElement
-      Array.isArray(styles.props.children)
-    ) {
-      const hasStyles = (el: React.ReactElement) =>
-        el &&
-        el.props &&
-        el.props.dangerouslySetInnerHTML &&
-        el.props.dangerouslySetInnerHTML.__html
-      // @ts-ignore Property 'props' does not exist on type ReactElement
-      styles.props.children.map((child: React.ReactElement) => {
-        if (Array.isArray(child)) {
-          child.map(el => hasStyles(el) && curStyles.push(el))
-        } else if (hasStyles(child)) {
-          curStyles.push(child)
-        }
-      })
-    }
+ 
 
     return (
       <head {...this.props}>
@@ -364,62 +290,10 @@ export class Head extends Component<
           name="next-head-count"
           content={React.Children.count(head || []).toString()}
         />
-        {/* {inAmpMode && (
+ 
+        { (
           <>
-            <meta
-              name="viewport"
-              content="width=device-width,minimum-scale=1,initial-scale=1"
-            />
-            {!hasCanonicalRel && (
-              <link
-                rel="canonical"
-                href={canonicalBase + cleanAmpPath(dangerousAsPath)}
-              />
-            )}
-           
-            <link
-              rel="preload"
-              as="script"
-              href="https://cdn.ampproject.org/v0.js"
-            />
-         
-            {styles && (
-              <style
-                amp-custom=""
-                dangerouslySetInnerHTML={{
-                  __html: curStyles
-                    .map(style => style.props.dangerouslySetInnerHTML.__html)
-                    .join('')
-                    .replace(/\/\*# sourceMappingURL=.*\*\//g, '')
-                    .replace(/\/\*@ sourceURL=.*?\*\//g, ''),
-                }}
-              />
-            )}
-            <style
-              amp-boilerplate=""
-              dangerouslySetInnerHTML={{
-                __html: `body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}`,
-              }}
-            />
-            <noscript>
-              <style
-                amp-boilerplate=""
-                dangerouslySetInnerHTML={{
-                  __html: `body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}`,
-                }}
-              />
-            </noscript>
-            <script async src="https://cdn.ampproject.org/v0.js" />
-          </>
-        )} */}
-        {!inAmpMode && (
-          <>
-            {!hasAmphtmlRel && hybridAmp && (
-              <link
-                rel="amphtml"
-                href={canonicalBase + getAmpPath(ampPath, dangerousAsPath)}
-              />
-            )}
+ 
             {page !== '/_error' && (
               <link
                 rel="preload"
@@ -477,8 +351,8 @@ export class Main extends Component {
   context!: DocumentComponentContext
 
   render() {
-    const { inAmpMode, html } = this.context._documentProps
-    if (inAmpMode) return '__NEXT_AMP_RENDER_TARGET__'
+    const {  html } = this.context._documentProps
+   
     return <div id="__next" dangerouslySetInnerHTML={{ __html: html }} />
   }
 }
@@ -591,46 +465,7 @@ export class NextScript extends Component<OriginProps> {
     } = this.context._documentProps
     const { _devOnlyInvalidateCacheQueryString } = this.context
 
-    if (inAmpMode) {
-      if (process.env.NODE_ENV === 'production') {
-        return null
-      }
-
-      const devFiles = [
-        CLIENT_STATIC_FILES_RUNTIME_AMP,
-        CLIENT_STATIC_FILES_RUNTIME_WEBPACK,
-      ]
-
-      return (
-        <>
-          {staticMarkup ? null : (
-            <script
-              id="__NEXT_DATA__"
-              type="application/json"
-              nonce={this.props.nonce}
-              crossOrigin={this.props.crossOrigin || process.crossOrigin}
-              dangerouslySetInnerHTML={{
-                __html: NextScript.getInlineScriptSource(
-                  this.context._documentProps
-                ),
-              }}
-              data-ampdevmode
-            />
-          )}
-          {devFiles
-            ? devFiles.map(file => (
-                <script
-                  key={file}
-                  src={`${assetPrefix}/_next/${file}${_devOnlyInvalidateCacheQueryString}`}
-                  nonce={this.props.nonce}
-                  crossOrigin={this.props.crossOrigin || process.crossOrigin}
-                  data-ampdevmode
-                />
-              ))
-            : null}
-        </>
-      )
-    }
+ 
 
     const { page, buildId } = __NEXT_DATA__
 
@@ -754,10 +589,7 @@ export class NextScript extends Component<OriginProps> {
   }
 }
 
-function getAmpPath(ampPath: string, asPath: string) {
-  return ampPath ? ampPath : `${asPath}${asPath.includes('?') ? '&' : '?'}amp=1`
-}
-
+ 
 function getPageFile(page: string, buildId?: string) {
   if (page === '/') {
     return buildId ? `/index.${buildId}.js` : '/index.js'

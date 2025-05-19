@@ -42,7 +42,7 @@ const serverBabelOptions = {
     'babel-plugin-dynamic-import-node',
     ['@babel/plugin-proposal-class-properties', { loose: true }]
   ],
-  sourceMaps:  false  ///===!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ,  set it to true for production 
+  sourceMaps:  true  ///===!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ,  set it to true for production 
 };
 
 // 客户端 Babel 配置
@@ -72,7 +72,7 @@ const clientBabelOptions = {
       }
     ]
   ],
-  sourceMaps: false  ///===!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ,  set it to true for production 
+  sourceMaps: true  ///===!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ,  set it to true for production 
 };
 
 

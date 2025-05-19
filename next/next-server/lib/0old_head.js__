@@ -1,0 +1,200 @@
+// 导入 React，用于创建元素和克隆元素
+const React = require('react');
+ 
+ const isServer = typeof window === 'undefined'
+// 创建 HeadManagerContext，用于管理 <head> 元素的更新
+ const { HeadManagerContext } = require ('./head-manager-context');
+
+
+// 默认的 head 标签，包含基本的 meta 标签
+// 默认的 <head> 内容，只包含 charset 和 viewport 两个 meta 标签
+function defaultHead() {
+  return [
+    <meta key="charSet" charSet="utf-8" />,
+    <meta
+      key="viewport"
+      name="viewport"
+      content="width=device-width,minimum-scale=1,initial-scale=1"
+    />,
+  ]
+}
+ 
+
+// 过滤非 React 元素，仅保留 React 元素（忽略字符串和数字）
+function onlyReactElement(list, child) {
+  // 如果 child 是字符串或数字，忽略
+  if (typeof child === 'string' || typeof child === 'number') {
+    return list;
+  }
+  // 支持 React.Fragment
+  if (child.type === React.Fragment) {
+    return list.concat(
+      React.Children.toArray(child.props.children).reduce((fragmentList, fragmentChild) => {
+        // 忽略字符串或数字的 Fragment 子节点
+        if (typeof fragmentChild === 'string' || typeof fragmentChild === 'number') {
+          return fragmentList;
+        }
+        return fragmentList.concat(fragmentChild);
+      }, [])
+    );
+  }
+  // 添加 React 元素到列表
+  return list.concat(child);
+}
+
+// 定义 meta 标签的属性类型
+const METATYPES = ['name', 'httpEquiv', 'charSet', 'itemProp'];
+
+// 创建去重过滤器，防止重复的 head 标签
+function unique() {
+  const keys = new Set(); // 存储已使用的 key
+  const tags = new Set(); // 存储已使用的标签类型（如 title, base）
+  const metaTypes = new Set(); // 存储已使用的 meta 类型（如 charSet）
+  const metaCategories = {}; // 存储 meta 属性的类别
+
+  return (h) => {
+    // 处理带 key 的元素（避免重复）
+    if (h.key && typeof h.key !== 'number' && h.key.indexOf('.$') === 0) {
+      if (keys.has(h.key)) return false;
+      keys.add(h.key);
+      return true;
+    }
+
+    // 根据标签类型去重
+    switch (h.type) {
+      case 'title':
+      case 'base':
+        if (tags.has(h.type)) return false;
+        tags.add(h.type);
+        break;
+      case 'meta':
+        for (let i = 0, len = METATYPES.length; i < len; i++) {
+          const metatype = METATYPES[i];
+          if (!h.props.hasOwnProperty(metatype)) continue;
+
+          if (metatype === 'charSet') {
+            if (metaTypes.has(metatype)) return false;
+            metaTypes.add(metatype);
+          } else {
+            const category = h.props[metatype];
+            const categories = metaCategories[metatype] || new Set();
+            if (categories.has(category)) return false;
+            categories.add(category);
+            metaCategories[metatype] = categories;
+          }
+        }
+        break;
+    }
+    return true;
+  };
+}
+
+// 合并和处理 head 元素 // 合并多个 <Head> 实例中的子元素，进行去重和排序处理
+function reduceComponents(headElements) {
+  return headElements
+    .reduce((list, headElement) => {
+      const headElementChildren = React.Children.toArray(headElement.props.children);
+      return list.concat(headElementChildren);
+    }, [])
+    .reduce(onlyReactElement, []) // 过滤非 React 元素
+    .reverse() // 反转顺序以确保优先级
+    .concat(defaultHead()) // 添加默认 head 标签
+    .filter(unique()) // 去重
+    .reverse() // 再次反转恢复顺序
+    .map((c, i) => {
+      const key = c.key || i; // 为每个元素分配 key
+      return React.cloneElement(c, { key }); // 克隆并添加 key
+    });
+}
+
+
+
+
+// 创建副作用组件，用于管理 <Head> 组件的状态和更新
+function withSideEffect() {
+  const mountedInstances = new Set(); // 存储已挂载的组件实例
+  let state; // 存储当前的 <head> 元素状态
+
+  // 触发状态变更并通知 handleStateChange
+  function emitChange(component) {
+    state = component.props.reduceComponentsToState(
+      [...mountedInstances],
+      component.props
+    );
+    if (component.props.handleStateChange) {
+      component.props.handleStateChange(state);
+    }
+  }
+
+  return class SideEffect extends React.Component {
+    // 用于服务端渲染，重置状态并返回记录的状态
+    static rewind() {
+      const recordedState = state;
+      state = undefined;
+      mountedInstances.clear();
+      return recordedState;
+    }
+
+    constructor(props) {
+      super(props);
+      if (isServer) {
+        mountedInstances.add(this);
+        emitChange(this);
+      }
+    }
+
+    componentDidMount() {
+      mountedInstances.add(this);
+      emitChange(this);
+    }
+
+    componentDidUpdate() {
+      emitChange(this);
+    }
+
+    componentWillUnmount() {
+      mountedInstances.delete(this);
+      emitChange(this);
+    }
+
+    render() {
+      return null;
+    }
+  };
+}
+
+// 创建副作用组件
+const Effect = withSideEffect();
+
+// Head 组件，注入 head 标签到页面
+function Head({ children }) { 
+
+  return (
+ 
+        <HeadManagerContext.Consumer>
+          {updateHead => (
+            <Effect
+              reduceComponentsToState={reduceComponents}
+              handleStateChange={updateHead}
+               inAmpMode={false} // 默认不启用 AMP
+            >
+              {children}
+            </Effect>
+          )}
+        </HeadManagerContext.Consumer>
+     
+  )
+
+
+ 
+}
+
+// 添加 rewind 方法，用于重置 Effect 状态
+Head.rewind = Effect.rewind;
+
+// 导出 Head 组件
+// 导出 Head 和 defaultHead
+module.exports = {
+  default: Head,
+  defaultHead,
+};

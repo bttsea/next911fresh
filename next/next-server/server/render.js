@@ -24,10 +24,10 @@ const { LoadableContext } = require('../lib/loadable-context');
 const { RouterContext } = require('../lib/router-context');
 const { DataManager } = require('../lib/data-manager'); 
 const { normalizePagePath } = require('./normalize-page-path');///const { getPageFiles } = require('./get-page-files');
-const { AmpStateContext } = require('../lib/amp-context');
  
-const { isInAmpMode } = require('../lib/amp');
-const { isDynamicRoute } = require('../lib/router/utils/is-dynamic');
+ 
+ 
+ 
 const { SPR_GET_INITIAL_PROPS_CONFLICT } = require('../../lib/constants');
 
 
@@ -106,7 +106,7 @@ function enhanceComponents(options, App, Component) {
 
 
 // 渲染 React 元素为字符串
-function render(renderElementToString, element, ampMode) {
+function render_old(renderElementToString, element, ampMode) {
   let html;
   let head;
 
@@ -117,11 +117,67 @@ function render(renderElementToString, element, ampMode) {
   try {
     html = renderElementToString(element);
   } finally {
-    head = Head.rewind() || defaultHead(isInAmpMode(ampMode));
+    head = Head.rewind() || defaultHead( );
   }
 
   return { html, head };
 }
+
+
+function render(renderElementToString, element) {
+
+  console.error('!!!!!!!!!!!!!!! element type:', typeof element);
+
+
+
+  let html;
+  let head;
+
+  try {
+    if (element && element.$$typeof === Symbol.for('react.element')) {
+      console.log('===Rendering    React element     directly');
+        console.log('---render: element:-- ----------' + JSON.stringify(element, null, 4));
+      html = renderElementToString(element);
+
+
+
+    } else if (typeof element === 'function' || typeof element === 'string') {
+
+      console.log('=----==Rendering    function  or      string');
+        console.log('---render: element:-- ----------' + JSON.stringify(element, null, 4));
+
+      const wrappedElement = <AppContainer><element /></AppContainer>;
+      html = renderElementToString(wrappedElement);
+
+
+
+    } else {
+
+ 
+        console.log('--?????????????   Invalid element -render: element:-- ----------' + JSON.stringify(element, null, 4));
+      html = renderElementToString(<div>Invalid component</div>);
+    }
+
+
+  } catch (err) {
+
+    if (err) {
+      console.log('????????????? -------------  typeof err   :', typeof err);
+      console.log('????????????? -------------    err   :',   err);
+    }
+
+    ///=== throw err;
+  }
+
+
+
+  finally {
+    head = Head.rewind() || defaultHead();
+  }
+  return { html, head };
+}
+
+
 
 
 
@@ -190,7 +246,7 @@ function renderDocument(Document, {
   return (
     '<!DOCTYPE html>' +
     renderToStaticMarkup(
-      <AmpStateContext.Provider value={ampState}>
+ 
         <Document
           __NEXT_DATA__={{
             dataManager: dataManagerData,
@@ -220,7 +276,7 @@ function renderDocument(Document, {
           assetPrefix={assetPrefix}
           {...docProps}
         />
-      </AmpStateContext.Provider>
+ 
     )
   );
 }
@@ -309,21 +365,24 @@ async function renderToHTML(req, res, pathname, query, renderOpts) {
 
   const asPath = req.url;
   const router = new ServerRouter(pathname, query, asPath);
+  // 构建上下文对象 ctx，传递给页面的初始 props 获取函数等用处
   const ctx = {
-    err,
-    req: isAutoExport ? undefined : req,
-    res: isAutoExport ? undefined : res,
-    pathname,
-    query,
-    asPath,
-    AppTree: (props) => {
-      return React.createElement(
-        AppContainer,
-        null,
-        React.createElement(App, { ...props, Component, router })
+    err: err,  // 发生的错误对象
+    req: isAutoExport ? undefined : req, // SSR 模式下才提供 req 请求对象
+    res: isAutoExport ? undefined : res, // SSR 模式下才提供 res 响应对象
+    pathname: pathname, // 当前页面路径
+    query: query, // URL 中的查询参数对象
+    asPath: asPath, // URL 显示在浏览器地址栏的真实路径
+    AppTree: function (props) {
+      // AppTree 是一个返回完整应用结构的 React 组件
+      return (
+        <AppContainer>
+          <App {...props} Component={Component} router={router} />
+        </AppContainer>
       );
     },
   };
+  ;
 
   let props;
   if (documentMiddlewareEnabled && typeof DocumentMiddleware === 'function') {
@@ -336,9 +395,9 @@ async function renderToHTML(req, res, pathname, query, renderOpts) {
   }
 
   const ampState = {
-    ampFirst: pageConfig.amp === true,
-    hasQuery: Boolean(query.amp),
-    hybrid: pageConfig.amp === 'hybrid',
+    ampFirst: false,
+    hasQuery: false,
+    hybrid: false,
   };
 
   const reactLoadableModules = [];
@@ -358,13 +417,13 @@ function AppContainer({ children }) {
   return (
     <RouterContext.Provider value={router}>
       <DataManagerContext.Provider value={dataManager}>
-        <AmpStateContext.Provider value={ampState}>
+ 
           <LoadableContext.Provider
             value={(moduleName) => reactLoadableModules.push(moduleName)}
           >
             {children}
           </LoadableContext.Provider>
-        </AmpStateContext.Provider>
+ 
       </DataManagerContext.Provider>
     </RouterContext.Provider>
   );
@@ -447,7 +506,11 @@ function AppContainer({ children }) {
 
   function renderPageError() {
     if (ctx.err && ErrorDebug) {
-      return render(renderElementToString, React.createElement(ErrorDebug, { error: ctx.err }), ampState);
+      return render(
+        renderElementToString,
+        <ErrorDebug error={ctx.err} />,
+        ampState
+      )
     }
 
     if (dev && (props.router || props.Component)) {
@@ -574,7 +637,7 @@ function AppContainer({ children }) {
 
 
   const dynamicImportsIds = [...dynamicImportIdsSet];
-  const inAmpMode = isInAmpMode(ampState);
+  const inAmpMode = false;
   const hybridAmp = ampState.hybrid;
 
   renderOpts.inAmpMode = inAmpMode;
