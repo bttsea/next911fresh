@@ -11,7 +11,7 @@ import { PUBLIC_DIR_MIDDLEWARE_CONFLICT } from '../lib/constants'
 import { findPagesDir } from '../lib/find-pages-dir'
 import { recursiveDelete } from '../lib/recursive-delete'
 import { recursiveReadDir } from '../lib/recursive-readdir'
-import { verifyTypeScriptSetup } from '../lib/verifyTypeScriptSetup'
+  ///===  import { verifyTypeScriptSetup } from '../lib/verifyTypeScriptSetup'
 import {
   BUILD_MANIFEST,
   PAGES_MANIFEST,
@@ -103,7 +103,7 @@ export default async function build(dir: string, conf = null): Promise<void> {
     recordNextPlugins(path.resolve(dir))
   )
 
-  await verifyTypeScriptSetup(dir, pagesDir)
+  ///=== await verifyTypeScriptSetup(dir, pagesDir)
 
   try {
     await fsStat(publicDir)
