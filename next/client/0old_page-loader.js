@@ -20,6 +20,12 @@ function preloadScript (url) {
   document.head.appendChild(link)
 }
 
+
+
+
+
+
+
 export default class PageLoader {
   constructor (buildId, assetPrefix) {
     this.buildId = buildId
@@ -41,6 +47,16 @@ export default class PageLoader {
     }
   }
 
+
+
+
+
+
+
+
+
+
+
   // Returns a promise for the dependencies for a particular route
   getDependencies (route) {
     return this.promisedBuildManifest.then(
@@ -58,9 +74,23 @@ export default class PageLoader {
     return route.replace(/\/$/, '')
   }
 
+
+
+
+
+
+
+
+
+
   loadPage (route) {
     return this.loadPageScript(route).then(v => v.page)
   }
+
+
+
+
+
 
   loadPageScript (route) {
     route = this.normalizeRoute(route)
@@ -113,6 +143,10 @@ export default class PageLoader {
     })
   }
 
+
+
+
+
   async loadRoute (route) {
     route = this.normalizeRoute(route)
     let scriptRoute = route === '/' ? '/index.js' : `${route}.js`
@@ -122,6 +156,11 @@ export default class PageLoader {
     )}/pages${scriptRoute}`
     this.loadScript(url, route, true)
   }
+
+
+
+
+
 
   loadScript (url, route, isPage) {
     const script = document.createElement('script')
@@ -140,6 +179,8 @@ export default class PageLoader {
     }
     document.body.appendChild(script)
   }
+
+  
 
   // This method if called by the route code.
   registerPage (route, regFn) {
