@@ -19,10 +19,16 @@ async function apiResolver(req, res, params, resolverModule) {
     let config = {};
     let bodyParser = true;
 
+         console.log('apiResolver !!!   '  );
+
+
     // 如果模块不存在，返回 404
     if (!resolverModule) {
       res.statusCode = 404;
       res.end('Not Found');
+
+               console.log('如果模块不存在，返回 404!!!   '  );
+
       return;
     }
 

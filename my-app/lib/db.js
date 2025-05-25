@@ -1,14 +1,14 @@
 const Datastore = require('nedb');
 
 // 硬编码 NeDB 数据库路径
-const dbPath = 'H:\\next911new\\my-app\\data\\posts.dat';
+const dbPath = 'H:\\next911fresh\\my-app\\data\\posts.dat';
 let db;
 
 if (typeof window === 'undefined') {
   const fs = require('fs');
 
   // 确保 data 目录存在
-  const dataDir = 'H:\\next911new\\my-app\\data';
+  const dataDir = 'H:\\next911fresh\\my-app\\data';
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
     console.log('Created data directory:', dataDir);

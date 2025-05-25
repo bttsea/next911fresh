@@ -364,7 +364,7 @@ async function compile() {
     babelCompileDir('bin', 'dist/bin' , {  stripExtension : true }),
     babelCompileDir('cli', 'dist/cli'),
     babelCompileDir('server', 'dist/server'),
-    babelCompileDir('telemetry', 'dist/telemetry'),
+  ///===  babelCompileDir('telemetry', 'dist/telemetry'),
     babelCompileDir('build', 'dist/build'),
     babelCompileDir('export', 'dist/export'),
     babelCompileDir('client', 'dist/client', true),   ///=== true 表示客户端

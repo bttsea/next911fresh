@@ -394,9 +394,15 @@ class Server {
     let params = false;
     let resolverFunction;
 
+     console.log('handleApiRequest   pathname' + pathname);
+
     try {
       resolverFunction = await this.resolveApiRequest(pathname);
     } catch (err) {}
+
+
+         console.log('resolverFunction is good? ');
+
 
     if (this.dynamicRoutes && this.dynamicRoutes.length > 0 && !resolverFunction) {
       for (const dynamicRoute of this.dynamicRoutes) {
@@ -409,6 +415,9 @@ class Server {
     }
 
     if (!resolverFunction) {
+
+           console.log('there is NO  resolverFunction,   so render404' );
+
       return this.render404(req, res);
     }
 
