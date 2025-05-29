@@ -352,7 +352,7 @@ async function precompile() {
     bundleWithEsbuild('arg'),
     bundleWithEsbuild('resolve'),
     bundleWithEsbuild('nanoid'),
-    bundleWithEsbuild('unistore'),
+ ///===   bundleWithEsbuild('unistore'),
     bundleWithEsbuild('text-table')
   ]);
 }

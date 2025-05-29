@@ -5,8 +5,7 @@ const { promisify } = require('util');
 // 引入项目内部常量和模块
 const {
   PAGES_MANIFEST,
-  SERVER_DIRECTORY,
-  SERVERLESS_DIRECTORY,
+  SERVER_DIRECTORY, 
 } = require('../lib/constants');
 const { normalizePagePath } = require('./normalize-page-path');
 
@@ -28,7 +27,7 @@ function pageNotFoundError(page) {
  * 获取页面的文件路径
  * @param {string} page - 页面路径（例如 '/about' 或 '/index'）
  * @param {string} distDir - 构建输出目录（例如 '.next'）
- * @param {boolean} serverless - 是否为无服务器模式
+ 
  * @param {boolean} [dev=false] - 是否为开发模式
  * @returns {string} 页面对应的文件路径
  * @throws {Error} 如果页面未找到，抛出 ENOENT 错误
@@ -71,7 +70,7 @@ function getPagePath(page, distDir, serverless, dev = false) {
  * 加载页面模块或 HTML 文件
  * @param {string} page - 页面路径（例如 '/about'）
  * @param {string} distDir - 构建输出目录（例如 '.next'）
- * @param {boolean} serverless - 是否为无服务器模式
+ 
  * @returns {any} 页面模块（JS）或 HTML 内容（字符串）
  */
 function requirePage(page, distDir, serverless) {

@@ -203,7 +203,7 @@ export default async function (dir, options, configuration) {
     dev: false,
     staticMarkup: false,
     hotReloader: null,
-    canonicalBase: (nextConfig.amp && nextConfig.amp.canonicalBase) || '',
+    canonicalBase:  '',
     isModern: nextConfig.experimental.modern,
   };
 
@@ -300,14 +300,14 @@ export default async function (dir, options, configuration) {
         serverless: false,
       });
 
-      // 处理 AMP 验证结果
-      for (const validation of result.ampValidations || []) {
-        const { page, result } = validation;
-        ampValidations[page] = result;
-        hadValidationError =
-          hadValidationError ||
-          (Array.isArray(result && result.errors) && result.errors.length > 0);
-      }
+      // // 处理 AMP 验证结果
+      // for (const validation of result.ampValidations || []) {
+      //   const { page, result } = validation;
+      //   ampValidations[page] = result;
+      //   hadValidationError =
+      //     hadValidationError ||
+      //     (Array.isArray(result && result.errors) && result.errors.length > 0);
+      // }
       renderError = renderError || !!result.error;
 
       // 记录页面预验证数据（用于构建导出）

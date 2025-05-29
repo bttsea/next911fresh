@@ -77,28 +77,28 @@ const IndexPage = ({ posts = [], error = null }) => {
 
 
 
-              // <button
-              //   key={postId}
-              //   onClick={() => handleNavigate(postId)}
-              //   style={{
-              //     display: 'block',
-              //     padding: 0,
-              //     margin: '1rem 0',
-              //     border: 'none',
-              //     background: 'none',
-              //     textAlign: 'left',
-              //     cursor: 'pointer'
-              //   }}
-              // >
-              //   <ImageCard post={post} />
-              // </button>
+              <button
+                key={postId}
+                onClick={() => handleNavigate(postId)}
+                style={{
+                  display: 'block',
+                  padding: 0,
+                  margin: '1rem 0',
+                  border: 'none',
+                  background: 'none',
+                  textAlign: 'left',
+                  cursor: 'pointer'
+                }}
+              >
+                <ImageCard post={post} />
+              </button>
 
 
-          <Link key={postId} href={`/posts/${postId}`}>
-            <a>
-              <ImageCard post={post} />
-            </a>
-          </Link>
+          // <Link key={postId} href={`/posts/${postId}`}>
+          //   <a>
+          //     <ImageCard post={post} />
+          //   </a>
+          // </Link>
 
 
 
