@@ -1,5 +1,5 @@
 // 导入 Webpack 的 Compiler
-import { Compiler } from 'webpack';
+import { Compiler } from 'webpack'; 
 
 /**
  * Webpack 插件：模拟 Webpack 3 的文件名和块文件名行为

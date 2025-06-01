@@ -23,7 +23,7 @@ const pageModules = {};
  * @param {string} page - 页面名称
  * @returns {Object|undefined} 包含外部和内部模块的集合，或 undefined
  */
-function getPageChunks(page) {
+export  function getPageChunks(page) {
   // 如果页面不存在于清单或模块中，返回 undefined
   if (!manifest.pages[page] && !pageModules[page]) {
     return;
@@ -237,8 +237,10 @@ export class ChunkGraphPlugin {
           } else {
             pages[pageName] = files;
             pageChunks[pageName] = [...involvedChunks];
-            pageModules[pageName] = nodeModules;
+          
           }
+  pageModules[pageName] = nodeModules;
+
         } else {
           if (chunk.name === CLIENT_STATIC_FILES_RUNTIME_MAIN) {
             sharedFiles.push(...files);

@@ -102,7 +102,7 @@ const defaultTSConfig = {
 // ✅ next-dev.js 特殊处理 (// REPLACE_NOOP_IMPORT)
 // ✅ process.env.__NEXT_VERSION 替换成 package.json 里的版本号
 async function babelCompileDir(srcDir, outDir, { isClient = false, stripExtension = false } = {}) {
-  const files = await glob(['**/*.{js,ts,tsx,d.ts}'], { cwd: srcDir, absolute: true });
+  const files = await glob(['**/*.{js,jsx,ts,tsx,d.ts}'], { cwd: srcDir, absolute: true });
 
   await Promise.all(files.map(async (file) => {
     const relativePath = path.relative(srcDir, file);
@@ -124,7 +124,7 @@ async function babelCompileDir(srcDir, outDir, { isClient = false, stripExtensio
         outPath = outPath.replace(new RegExp(ext.replace('.', '\\.') + '$', 'i'), '');
       } else {
         // 否则正常替换成 .js  如果 stripExtension 是 false，就正常 .ts|.tsx ➔ .js
-        outPath = outPath.replace(/\.(ts|tsx)$/, '.js');
+        outPath = outPath.replace(/\.(ts|tsx|jsx)$/, '.js');
       }
     }
 
@@ -352,7 +352,7 @@ async function precompile() {
     bundleWithEsbuild('arg'),
     bundleWithEsbuild('resolve'),
     bundleWithEsbuild('nanoid'),
- ///===   bundleWithEsbuild('unistore'),
+  bundleWithEsbuild('unistore'),
     bundleWithEsbuild('text-table')
   ]);
 }

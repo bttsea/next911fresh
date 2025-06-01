@@ -9,7 +9,8 @@ import {
   ROUTE_NAME_REGEX,
 } from '../../../next-server/lib/constants';
 // 导入 Webpack 的 Compiler 和 RawSource
-import { Compiler, RawSource } from 'webpack';
+import { Compiler } from 'webpack'
+import { RawSource } from 'webpack-sources'
 
 /**
  * 生成客户端构建清单
@@ -25,7 +26,7 @@ function generateClientManifest(assetMap, isModern) {
   // 遍历页面资源，过滤依赖
   Object.entries(assetMap.pages).forEach(([page, dependencies]) => {
     if (page === '/_app') return;
-    // 过滤掉 _app 的依赖，仅保留符合现代化条件的模块
+    // 过滤掉 _app 的依赖，仅保留符合现代化条件的模块  // 过滤掉在 /_app 中已经加载的依赖，以及不匹配是否 modern 的资源
     const filteredDeps = dependencies.filter(
       (dep) => !appDependencies.has(dep) && /\.module\.js$/.test(dep) === isModern
     );
@@ -86,7 +87,7 @@ export default class BuildManifestPlugin {
         }
       }
 
-      // 遍历入口点
+      // 遍历入口点  // 遍历每个入口（entrypoints 是一个 Map）
       for (const [, entrypoint] of compilation.entrypoints.entries()) {
         const result = ROUTE_NAME_REGEX.exec(entrypoint.name);
         if (!result) {
@@ -101,7 +102,7 @@ export default class BuildManifestPlugin {
         const filesForEntry = [];
         // 遍历入口点的块
         for (const chunk of entrypoint.chunks) {
-          if (!chunk.name || !chunk.files) {
+          if (!chunk.name || !chunk.files) { // 如果 chunk 没有 name 或没有文件则跳过
             continue;
           }
 
@@ -150,12 +151,13 @@ export default class BuildManifestPlugin {
       }
 
       // 按页面名称排序
-      assetMap.pages = Object.keys(assetMap.pages)
-        .sort()
-        .reduce((a, c) => {
-          a[c] = assetMap.pages[c];
-          return a;
-        }, {});
+        // 对页面 key 排序，便于输出一致性
+        assetMap.pages = Object.keys(assetMap.pages)
+          .sort()
+          .reduce((acc, key) => {
+            acc[key] = assetMap.pages[key]
+            return acc
+          }, {})
 
       // 输出 build-manifest.json
       compilation.assets[BUILD_MANIFEST] = new RawSource(
@@ -186,7 +188,7 @@ export default class BuildManifestPlugin {
     });
   }
 }
-
+ 
 
 /*
 代码功能说明
