@@ -1,5 +1,6 @@
 // 导入 unistore 状态管理库
-import createStore from './unistore'
+///=== import createStore from './unistore'
+import createStore from '../../lib/unistore'
 // 导入 ANSI 字符剥离库
 import stripAnsi from 'strip-ansi'
 

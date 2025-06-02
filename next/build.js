@@ -349,11 +349,11 @@ async function clearDist() {
 
 async function precompile() {
   await Promise.all([
-    bundleWithEsbuild('arg'),
+  ///===    bundleWithEsbuild('arg'),
     bundleWithEsbuild('resolve'),
-    bundleWithEsbuild('nanoid'),
-  bundleWithEsbuild('unistore'),
-    bundleWithEsbuild('text-table')
+  ///===    bundleWithEsbuild('nanoid'),
+ ///=== bundleWithEsbuild('unistore'),
+   ///=== bundleWithEsbuild('text-table')
   ]);
 }
 

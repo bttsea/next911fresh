@@ -3,7 +3,8 @@ import chalk from 'chalk'
 // 导入文件系统模块
 import fs from 'fs'
 // 导入文本表格生成库
-import textTable from 'next/dist/compiled/text-table'
+///=== import textTable from 'next/dist/compiled/text-table'
+import textTable from '../lib/text-table'
 // 导入路径处理模块
 import path from 'path'
 // 导入 ANSI 字符剥离库，用于计算字符串长度

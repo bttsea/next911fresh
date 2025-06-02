@@ -7,8 +7,8 @@ import Worker from 'jest-worker'
 // 导入 mkdirp，用于递归创建目录
 import mkdirpOrig from 'mkdirp'
 // 导入 nanoid，用于生成唯一 ID
- import nanoid from 'next/dist/compiled/nanoid/index.js'
-///=== import nanoid from './nanoid'
+///===  import nanoid from 'next/dist/compiled/nanoid/index.js'
+import nanoid from '../lib/nanoid'
 // 导入路径处理模块
 import path from 'path'
 // 导入 util 的 promisify 方法，用于将回调函数转换为 Promise

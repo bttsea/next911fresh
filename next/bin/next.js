@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import arg from 'next/dist/compiled/arg/index.js';
+///=== import arg from 'next/dist/compiled/arg/index.js';
+ import arg from '../lib/arg'
 
 // 检查必要依赖（react 和 react-dom）
 ['react', 'react-dom'].forEach((dependency) => {

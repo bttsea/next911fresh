@@ -2,7 +2,8 @@
 // 导入文件系统模块的 existsSync 方法，用于检查目录是否存在
 import { existsSync } from 'fs'
 // 导入 arg 模块，用于解析命令行参数
-import arg from 'next/dist/compiled/arg/index.js'
+///=== import arg from 'next/dist/compiled/arg/index.js'
+import arg from '../lib/arg'
 // 导入路径解析模块
 import { resolve } from 'path'
 
